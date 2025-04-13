@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		3CA8F4122DAAE8F20081D9A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3CA8F3F82DAAE8ED0081D9A3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3CA8F3FF2DAAE8ED0081D9A3;
+			remoteInfo = PointsOfLight;
+		};
+		3CA8F41C2DAAE8F20081D9A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3CA8F3F82DAAE8ED0081D9A3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3CA8F3FF2DAAE8ED0081D9A3;
+			remoteInfo = PointsOfLight;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3CA8F4002DAAE8ED0081D9A3 /* PointsOfLight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PointsOfLight.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CA8F4112DAAE8F20081D9A3 /* PointsOfLightTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PointsOfLightTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3CA8F41B2DAAE8F20081D9A3 /* PointsOfLightUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PointsOfLightUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		3CA8F4022DAAE8ED0081D9A3 /* PointsOfLight */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PointsOfLight;
+			sourceTree = "<group>";
+		};
+		3CA8F4142DAAE8F20081D9A3 /* PointsOfLightTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PointsOfLightTests;
+			sourceTree = "<group>";
+		};
+		3CA8F41E2DAAE8F20081D9A3 /* PointsOfLightUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PointsOfLightUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3CA8F3FD2DAAE8ED0081D9A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CA8F40E2DAAE8F20081D9A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CA8F4182DAAE8F20081D9A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3CA8F3F72DAAE8ED0081D9A3 = {
+			isa = PBXGroup;
+			children = (
+				3CA8F4022DAAE8ED0081D9A3 /* PointsOfLight */,
+				3CA8F4142DAAE8F20081D9A3 /* PointsOfLightTests */,
+				3CA8F41E2DAAE8F20081D9A3 /* PointsOfLightUITests */,
+				3CA8F4012DAAE8ED0081D9A3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3CA8F4012DAAE8ED0081D9A3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3CA8F4002DAAE8ED0081D9A3 /* PointsOfLight.app */,
+				3CA8F4112DAAE8F20081D9A3 /* PointsOfLightTests.xctest */,
+				3CA8F41B2DAAE8F20081D9A3 /* PointsOfLightUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3CA8F3FF2DAAE8ED0081D9A3 /* PointsOfLight */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CA8F4252DAAE8F20081D9A3 /* Build configuration list for PBXNativeTarget "PointsOfLight" */;
+			buildPhases = (
+				3CA8F3FC2DAAE8ED0081D9A3 /* Sources */,
+				3CA8F3FD2DAAE8ED0081D9A3 /* Frameworks */,
+				3CA8F3FE2DAAE8ED0081D9A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3CA8F4022DAAE8ED0081D9A3 /* PointsOfLight */,
+			);
+			name = PointsOfLight;
+			packageProductDependencies = (
+			);
+			productName = PointsOfLight;
+			productReference = 3CA8F4002DAAE8ED0081D9A3 /* PointsOfLight.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3CA8F4102DAAE8F20081D9A3 /* PointsOfLightTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CA8F4282DAAE8F20081D9A3 /* Build configuration list for PBXNativeTarget "PointsOfLightTests" */;
+			buildPhases = (
+				3CA8F40D2DAAE8F20081D9A3 /* Sources */,
+				3CA8F40E2DAAE8F20081D9A3 /* Frameworks */,
+				3CA8F40F2DAAE8F20081D9A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CA8F4132DAAE8F20081D9A3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3CA8F4142DAAE8F20081D9A3 /* PointsOfLightTests */,
+			);
+			name = PointsOfLightTests;
+			packageProductDependencies = (
+			);
+			productName = PointsOfLightTests;
+			productReference = 3CA8F4112DAAE8F20081D9A3 /* PointsOfLightTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		3CA8F41A2DAAE8F20081D9A3 /* PointsOfLightUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CA8F42B2DAAE8F20081D9A3 /* Build configuration list for PBXNativeTarget "PointsOfLightUITests" */;
+			buildPhases = (
+				3CA8F4172DAAE8F20081D9A3 /* Sources */,
+				3CA8F4182DAAE8F20081D9A3 /* Frameworks */,
+				3CA8F4192DAAE8F20081D9A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CA8F41D2DAAE8F20081D9A3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3CA8F41E2DAAE8F20081D9A3 /* PointsOfLightUITests */,
+			);
+			name = PointsOfLightUITests;
+			packageProductDependencies = (
+			);
+			productName = PointsOfLightUITests;
+			productReference = 3CA8F41B2DAAE8F20081D9A3 /* PointsOfLightUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3CA8F3F82DAAE8ED0081D9A3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					3CA8F3FF2DAAE8ED0081D9A3 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					3CA8F4102DAAE8F20081D9A3 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 3CA8F3FF2DAAE8ED0081D9A3;
+					};
+					3CA8F41A2DAAE8F20081D9A3 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 3CA8F3FF2DAAE8ED0081D9A3;
+					};
+				};
+			};
+			buildConfigurationList = 3CA8F3FB2DAAE8ED0081D9A3 /* Build configuration list for PBXProject "PointsOfLight" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3CA8F3F72DAAE8ED0081D9A3;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 3CA8F4012DAAE8ED0081D9A3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3CA8F3FF2DAAE8ED0081D9A3 /* PointsOfLight */,
+				3CA8F4102DAAE8F20081D9A3 /* PointsOfLightTests */,
+				3CA8F41A2DAAE8F20081D9A3 /* PointsOfLightUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3CA8F3FE2DAAE8ED0081D9A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CA8F40F2DAAE8F20081D9A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CA8F4192DAAE8F20081D9A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3CA8F3FC2DAAE8ED0081D9A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CA8F40D2DAAE8F20081D9A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3CA8F4172DAAE8F20081D9A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3CA8F4132DAAE8F20081D9A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3CA8F3FF2DAAE8ED0081D9A3 /* PointsOfLight */;
+			targetProxy = 3CA8F4122DAAE8F20081D9A3 /* PBXContainerItemProxy */;
+		};
+		3CA8F41D2DAAE8F20081D9A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3CA8F3FF2DAAE8ED0081D9A3 /* PointsOfLight */;
+			targetProxy = 3CA8F41C2DAAE8F20081D9A3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3CA8F4232DAAE8F20081D9A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		3CA8F4242DAAE8F20081D9A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		3CA8F4262DAAE8F20081D9A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PointsOfLight/PointsOfLight.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PointsOfLight/Preview Content\"";
+				DEVELOPMENT_TEAM = 8CBHKMDMXF;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wiki.nima.PointsOfLight;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		3CA8F4272DAAE8F20081D9A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PointsOfLight/PointsOfLight.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PointsOfLight/Preview Content\"";
+				DEVELOPMENT_TEAM = 8CBHKMDMXF;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wiki.nima.PointsOfLight;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		3CA8F4292DAAE8F20081D9A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8CBHKMDMXF;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wiki.nima.PointsOfLightTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PointsOfLight.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PointsOfLight";
+			};
+			name = Debug;
+		};
+		3CA8F42A2DAAE8F20081D9A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8CBHKMDMXF;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wiki.nima.PointsOfLightTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PointsOfLight.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PointsOfLight";
+			};
+			name = Release;
+		};
+		3CA8F42C2DAAE8F20081D9A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8CBHKMDMXF;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wiki.nima.PointsOfLightUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = PointsOfLight;
+			};
+			name = Debug;
+		};
+		3CA8F42D2DAAE8F20081D9A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8CBHKMDMXF;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wiki.nima.PointsOfLightUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = PointsOfLight;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3CA8F3FB2DAAE8ED0081D9A3 /* Build configuration list for PBXProject "PointsOfLight" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CA8F4232DAAE8F20081D9A3 /* Debug */,
+				3CA8F4242DAAE8F20081D9A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3CA8F4252DAAE8F20081D9A3 /* Build configuration list for PBXNativeTarget "PointsOfLight" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CA8F4262DAAE8F20081D9A3 /* Debug */,
+				3CA8F4272DAAE8F20081D9A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3CA8F4282DAAE8F20081D9A3 /* Build configuration list for PBXNativeTarget "PointsOfLightTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CA8F4292DAAE8F20081D9A3 /* Debug */,
+				3CA8F42A2DAAE8F20081D9A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3CA8F42B2DAAE8F20081D9A3 /* Build configuration list for PBXNativeTarget "PointsOfLightUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CA8F42C2DAAE8F20081D9A3 /* Debug */,
+				3CA8F42D2DAAE8F20081D9A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3CA8F3F82DAAE8ED0081D9A3 /* Project object */;
+}
