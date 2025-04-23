@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3CA8F4302DB457800081D9A3 /* llbuild2 in Frameworks */ = {isa = PBXBuildFile; productRef = 3CA8F42F2DB457800081D9A3 /* llbuild2 */; };
+		3CA8F4322DB457800081D9A3 /* llbuild2fx in Frameworks */ = {isa = PBXBuildFile; productRef = 3CA8F4312DB457800081D9A3 /* llbuild2fx */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		3CA8F4122DAAE8F20081D9A3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +57,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CA8F4322DB457800081D9A3 /* llbuild2fx in Frameworks */,
+				3CA8F4302DB457800081D9A3 /* llbuild2 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +119,8 @@
 			);
 			name = PointsOfLight;
 			packageProductDependencies = (
+				3CA8F42F2DB457800081D9A3 /* llbuild2 */,
+				3CA8F4312DB457800081D9A3 /* llbuild2fx */,
 			);
 			productName = PointsOfLight;
 			productReference = 3CA8F4002DAAE8ED0081D9A3 /* PointsOfLight.app */;
@@ -195,6 +204,9 @@
 			);
 			mainGroup = 3CA8F3F72DAAE8ED0081D9A3;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3CA8F42E2DB457800081D9A3 /* XCRemoteSwiftPackageReference "swift-llbuild2" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3CA8F4012DAAE8ED0081D9A3 /* Products */;
 			projectDirPath = "";
@@ -549,6 +561,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3CA8F42E2DB457800081D9A3 /* XCRemoteSwiftPackageReference "swift-llbuild2" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-llbuild2";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.23.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3CA8F42F2DB457800081D9A3 /* llbuild2 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3CA8F42E2DB457800081D9A3 /* XCRemoteSwiftPackageReference "swift-llbuild2" */;
+			productName = llbuild2;
+		};
+		3CA8F4312DB457800081D9A3 /* llbuild2fx */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3CA8F42E2DB457800081D9A3 /* XCRemoteSwiftPackageReference "swift-llbuild2" */;
+			productName = llbuild2fx;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3CA8F3F82DAAE8ED0081D9A3 /* Project object */;
 }

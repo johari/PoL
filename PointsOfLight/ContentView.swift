@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import llbuild2fx
+
+// MARK: Helper data types
 
 struct LayoutRegion {
     var origin: CGPoint
@@ -17,29 +20,59 @@ struct WindowLayout: Equatable {
     var scale: CGFloat
 }
 
+extension Array {
+    func chunked(into size: Int) -> [[Element]] {
+        if size == 0 {
+            return []
+        }
+        return stride(from: 0, to: count, by: size).map {
+            Array(self[$0..<Swift.min($0 + size, count)])
+        }
+    }
+}
+
+extension CGRect {
+    var center: CGPoint {
+        CGPoint(x: midX, y: midY)
+    }
+}
+
+
+
+// MARK: RepellingViews
 struct RepellingViews: View {
     @State private var entries: [WindowMetadata]
-    @State private var layout: [String: WindowLayout] = [:]
+    @State private var layout: [Artifact: WindowLayout] = [:]
     @Binding private var globalState: GlobalState
+    private var ctx: Context
 
-    public init(entries: [WindowMetadata], globalState: Binding<GlobalState>) {
+    public init(entries: [WindowMetadata], globalState: Binding<GlobalState>, ctx: Context) {
         self._entries = State(initialValue: entries)
         self._globalState = globalState
+        self.ctx = ctx
     }
 
     var body: some View {
         VStack {
             Color.clear.frame(height: 40) // adds exact 40pt space
-            HStack {
-                ForEach(Array(globalState.tags.keys.sorted()), id: \.self) { tag in
-                    Button(tag) {
-                        if globalState.tagFilter.contains(tag) {
-                            globalState.tagFilter.remove(tag)
-                        } else {
-                            globalState.tagFilter.insert(tag)
+            let tags = Array(globalState.tags.keys.sorted())
+            let rows = tags.chunked(into: (tags.count + 1) / 3) // split into 2 rows
+
+            VStack {
+                ForEach(rows, id: \.self) { row in
+                    HStack {
+                        ForEach(row, id: \.self) { tag in
+                            Button(tag) {
+                                if globalState.tagFilter.contains(tag) {
+                                    globalState.tagFilter.remove(tag)
+                                } else {
+                                    globalState.tagFilter.insert(tag)
+                                }
+                                globalState.selected = []
+                            }
+                            .border(globalState.tagFilter.contains(tag) ? .purple : .clear, width: 5)
                         }
-                        globalState.selected = []
-                    }.border(globalState.tagFilter.contains(tag) ? .purple : .clear, width: 5)
+                    }
                 }
             }
             body_
@@ -53,7 +86,7 @@ struct RepellingViews: View {
             ZStack {
                 ForEach(entries, id: \.self) { entry in
                     if let info = layout[entry.id] {
-                        TinyWindowContent(metadata: entry)
+                        TinyWindowContent(metadata: entry, ctx: ctx)
                             .border(globalState.selected.contains(entry.id) ? .black : Color.blue, width: globalState.selected.contains(entry.id) ? 10 : 2)
                             .frame(width: entry.size.width, height: entry.size.height)
                             .onTapGesture {
@@ -82,7 +115,8 @@ struct RepellingViews: View {
         }
     }
 
-    func computeOrganicExposeLayout6(entries: [WindowMetadata]) -> [String: WindowLayout] {
+    // MARK: computeOrganicExposeLayout6
+    func computeOrganicExposeLayout6(entries: [WindowMetadata]) -> [Artifact: WindowLayout] {
         guard let screen = NSScreen.main else { return [:] }
 
         let marginFactor: CGFloat = 0.2
@@ -105,8 +139,8 @@ struct RepellingViews: View {
 
         let sorted = entries.sorted { $0.size.width * $0.size.height > $1.size.width * $1.size.height }
 
-        var roughPositions: [String: CGPoint] = [:]
-        var rects: [String: CGRect] = [:]
+        var roughPositions: [Artifact: CGPoint] = [:]
+        var rects: [Artifact: CGRect] = [:]
 
         for (index, entry) in sorted.enumerated() {
             let angle = CGFloat(index) * .pi * 0.382 // golden angle spiral
@@ -115,7 +149,7 @@ struct RepellingViews: View {
                 x: radius * cos(angle),
                 y: radius * sin(angle)
             )
-            roughPositions[entry.id] = pos
+            roughPositions[entry.artifact] = pos
 
             let frame = CGRect(
                 origin: CGPoint(x: pos.x - entry.size.width / 2, y: pos.y - entry.size.height / 2),
@@ -136,7 +170,7 @@ struct RepellingViews: View {
         let globalScale = min(scaleX, scaleY, 1.0)
 
         // Center and scale positions into usable area
-        var layout: [String: WindowLayout] = [:]
+        var layout: [Artifact: WindowLayout] = [:]
         for entry in sorted {
             guard let rough = roughPositions[entry.id] else { continue }
 
@@ -151,7 +185,8 @@ struct RepellingViews: View {
         return layout
     }
 
-    func computeOrganicExposeLayout5(entries: [WindowMetadata]) -> [String: WindowLayout] {
+    // MARK: computeOrganicExposeLayout5
+    func computeOrganicExposeLayout5(entries: [WindowMetadata]) -> [Artifact: WindowLayout] {
         guard let screen = NSScreen.main else { return [:] }
 
         let marginFactor: CGFloat = 0.2
@@ -174,8 +209,8 @@ struct RepellingViews: View {
 
         let sorted = entries.sorted { $0.size.width * $0.size.height > $1.size.width * $1.size.height }
 
-        var roughPositions: [String: CGPoint] = [:]
-        var rects: [String: CGRect] = [:]
+        var roughPositions: [Artifact: CGPoint] = [:]
+        var rects: [Artifact: CGRect] = [:]
 
         for (index, entry) in sorted.enumerated() {
             let angle = CGFloat(index) * .pi * 0.382 // golden angle spiral
@@ -205,7 +240,7 @@ struct RepellingViews: View {
         let globalScale = min(scaleX, scaleY, 1.0)
 
         // Center and scale positions into usable area
-        var layout: [String: WindowLayout] = [:]
+        var layout: [Artifact: WindowLayout] = [:]
         for entry in sorted {
             guard let rough = roughPositions[entry.id] else { continue }
 
@@ -221,8 +256,8 @@ struct RepellingViews: View {
     }
 
     
-    // Spiral
-    func computeOrganicExposeLayout7(entries: [WindowMetadata]) -> [String: WindowLayout] {
+    // MARK: Spiral
+    func computeOrganicExposeLayout7(entries: [WindowMetadata]) -> [Artifact: WindowLayout] {
         guard let screen = NSScreen.main else { return [:] }
 
         let marginFactor: CGFloat = 0.2
@@ -239,8 +274,8 @@ struct RepellingViews: View {
                                     y: layoutOrigin.y + usableSize.height / 2)
 
         // Step 1: Organic spiral layout (no bounds constraint yet)
-        var roughPositions: [String: CGPoint] = [:]
-        var rects: [String: CGRect] = [:]
+        var roughPositions: [Artifact: CGPoint] = [:]
+        var rects: [Artifact: CGRect] = [:]
         let padding: CGFloat = 16
         let sorted = entries.sorted { $0.size.width * $0.size.height > $1.size.width * $1.size.height }
 
@@ -269,7 +304,7 @@ struct RepellingViews: View {
         let globalScale = min(scaleX, scaleY, 1.0)
 
         // Step 4: Center and scale everything
-        var layout: [String: WindowLayout] = [:]
+        var layout: [Artifact: WindowLayout] = [:]
         for entry in sorted {
             guard let rough = roughPositions[entry.id] else { continue }
             let translated = CGPoint(
@@ -282,7 +317,8 @@ struct RepellingViews: View {
         return layout
     }
 
-    func computeOrganicExposeLayout(entries: [WindowMetadata]) -> [String: WindowLayout] {
+    // MARK: computeOrganicExposeLayout
+    func computeOrganicExposeLayout(entries: [WindowMetadata]) -> [Artifact: WindowLayout] {
         guard let screen = NSScreen.main else { return [:] }
 
         let marginFactor: CGFloat = 0.05
@@ -301,7 +337,7 @@ struct RepellingViews: View {
         let sorted = entries.sorted { $0.size.width * $0.size.height > $1.size.width * $1.size.height }
         let padding: CGFloat = 16
 
-        var layout: [String: WindowLayout] = [:]
+        var layout: [Artifact: WindowLayout] = [:]
         var globalScale: CGFloat = 1.0
 
         retry: while globalScale > 0.05 {
@@ -371,6 +407,7 @@ struct RepellingViews: View {
 
     
 
+    // MARK: commented out old code
 //    func computeOrganicExposeLayout(entries: [WindowMetadata]) -> [String: WindowLayout] {
 //        guard let screen = NSScreen.main else { return [:] }
 //
@@ -442,14 +479,15 @@ struct RepellingViews: View {
 //        return layout
 //    }
 
-    func computeOrganicExposeLayout2(entries: [WindowMetadata], canvasSize: CGSize) -> [String: WindowLayout] {
+    // MARK: computeOrganicExposeLayout2
+    func computeOrganicExposeLayout2(entries: [WindowMetadata], canvasSize: CGSize) -> [Artifact: WindowLayout] {
         let padding: CGFloat = 16
         let center = CGPoint(x: canvasSize.width / 2, y: canvasSize.height / 2)
 
         // Sort largest windows first
         let sorted = entries.sorted { $0.size.width * $0.size.height > $1.size.width * $1.size.height }
 
-        var layout: [String: WindowLayout] = [:]
+        var layout: [Artifact: WindowLayout] = [:]
         var placedRects: [CGRect] = []
 
         for entry in sorted {
@@ -497,7 +535,8 @@ struct RepellingViews: View {
         return layout
     }
 
-    func computeExposeLayout(entries: [WindowMetadata], canvasSize: CGSize) -> [String: WindowLayout] {
+    // MARK: computeExposeLayout
+    func computeExposeLayout(entries: [WindowMetadata], canvasSize: CGSize) -> [Artifact: WindowLayout] {
         let padding: CGFloat = 12
 
         // 1. Calculate how many rows/columns fit best
@@ -509,7 +548,7 @@ struct RepellingViews: View {
         let cellWidth = canvasSize.width / cols
         let cellHeight = canvasSize.height / rows
 
-        var layout: [String: WindowLayout] = [:]
+        var layout: [Artifact: WindowLayout] = [:]
 
         for (index, entry) in entries.enumerated() {
             let col = CGFloat(index).truncatingRemainder(dividingBy: cols)
@@ -533,6 +572,7 @@ struct RepellingViews: View {
 
 }
 
+// MARK: ContentView
 struct ContentView: View {
     var globalState: Binding<GlobalState>
     @State var tagValue: String = ""
@@ -566,7 +606,7 @@ struct ContentView: View {
             })
             HStack {
                 Group {
-                    ForEach(Array(globalState.selected.wrappedValue), id: \.self) { t in
+                    ForEach(Array(arrayLiteral: globalState.selected.wrappedValue), id: \.self) { t in
                         Text(t.description.debugDescription)
                     }
                 }
@@ -583,18 +623,13 @@ struct ContentView: View {
 
 struct AggregateView: View {
     var entries: [WindowMetadata]
+    var ctx: Context
 
     var body: some View {
         ForEach(entries) { entry in
-            TinyWindowContent(metadata: entry)
+            TinyWindowContent(metadata: entry, ctx: ctx)
         }
     }
 }
 
-
-extension CGRect {
-    var center: CGPoint {
-        CGPoint(x: midX, y: midY)
-    }
-}
 

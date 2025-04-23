@@ -7,26 +7,76 @@
 
 import SwiftUI
 import AppKit
+import llbuild2fx
+import TSFCASFileTree
+import TSCBasic
 
-let IMAGE_FORMATS = ["png", "jpg", "jpg", "gif", "webp", "jpeg"]
+let IMAGE_FORMATS = ["png", "jpg", "jpg", "JPG", "gif", "webp", "jpeg"]
 let VIDEO_FORMATS = ["mov", "mkv", "mp4", "avi", "webm"]
+let TEXT_FORMATS = ["txt", "md", "html"]
+
+enum Artifact: Identifiable, Codable, Hashable {
+    case localFile(path: String, mime: String?)
+    case casBlob(id: LLBDataID, label: String)
+    case feed(id: String)
+
+    var id: URL {
+        switch self {
+        case .feed(id: let id): URL(string: "https://freefeed.net/feed/\(id)")!
+        case .casBlob(id: let id, label: _): URL(string: "x-cas://\(id)")!
+        case .localFile(path: let path, mime: _): URL(string: "file:///\(path)")!
+        }
+    }
+}
 
 struct GlobalState: Hashable, Codable {
-    var selected: Set<String> = []
-    var tags: [String: Set<String>] = [:]
+    var selected: Set<Artifact> = []
+    var tags: [String: Set<Artifact>] = [:]
     var tagFilter: Set<String> = []
 
-    func isTagged(_ item: WindowMetadata) -> Bool {
+    func isIndirectlyTagged(artifact: Artifact, tag t: String) -> Bool {
+        switch artifact {
+        case .localFile(let path, let mime):
+            break
+        case .casBlob(let id, let label):
+            return (tags[t] ?? []).contains(where: { artifact in
+                switch artifact {
+                case .localFile(let path, let mime):
+                    false
+                case .casBlob(let id_, let label_):
+                    id_ == id || label_ == label
+                case .feed(let id):
+                    false
+                }
+            })
+        case .feed(let id):
+            break
+        }
+        return false
+    }
+
+    mutating func isTagged(_ item: WindowMetadata) -> Bool {
+        // If tagFilter is empty, display everything that is untagged
         if tagFilter.isEmpty {
             for t in tags.keys {
-                if (tags[t] ?? []).contains(item.path) {
+                // If the artifact exists in verbatim form, it should not be displayed
+                if (tags[t] ?? []).contains(item.artifact) {
+                    return false
+                }
+                if isIndirectlyTagged(artifact: item.artifact, tag: t) {
                     return false
                 }
             }
             return true
         }
+
+        // Otherwise, display things that match the tag filter
         for t in tagFilter {
-            if (tags[t] ?? []).contains(item.path) {
+            if (tags[t] ?? []).contains(item.artifact) {
+                return true
+            }
+            if isIndirectlyTagged(artifact: item.artifact, tag: t) {
+                tags[t]?.insert(item.artifact)
                 return true
             }
         }
@@ -42,14 +92,33 @@ struct TinyWindowsApp: App {
         WindowGroup {
             ContentView(globalState: $globalState)
                 .onAppear {
-                    spawnTinyWindows()
-                    sortAndLayoutWindowsIntoColumns()
-                    spawnAggregateWindow(globalState: $globalState)
+                    Task {
+                        var ctx = Context()
+                        let casPath = NSString("~/.pol-cas/").expandingTildeInPath
+
+                        if !FileManager.default.fileExists(atPath: casPath) {
+                            try FileManager.default.createDirectory(
+                                at: URL(
+                                    fileURLWithPath: casPath
+                                ),
+                                withIntermediateDirectories: false
+                            )
+                        }
+                        ctx.db = LLBFileBackedCASDatabase(
+                            group: .singletonMultiThreadedEventLoopGroup,
+                            path: AbsolutePath(casPath)
+                        )
+                        try await spawnTinyWindows(ctx: ctx)
+                        // sortAndLayoutWindowsIntoColumns()
+                        try await spawnAggregateWindow(globalState: $globalState, ctx: ctx)
+                    }
                 }
         }
     }
 }
 
+// MARK: spawnHeaderWindows
+/*
 func spawnHeaderWindows(titles: [String], offset: [Int: Int]) {
     let screenHeight = NSScreen.main?.frame.height ?? 1000
     let y = screenHeight - 40 // just 40px from top
@@ -61,6 +130,7 @@ func spawnHeaderWindows(titles: [String], offset: [Int: Int]) {
             backing: .buffered,
             defer: false
         )
+
         let hostingView = NSHostingView(
             rootView: TinyWindowContent(
                 metadata: WindowMetadata(
@@ -86,7 +156,7 @@ func spawnHeaderWindows(titles: [String], offset: [Int: Int]) {
         WindowManager.shared.headers.append(window)
     }
 }
-
+*/
 
 //func spawnTinyWindows() {
 //    for i in 0..<100 {
@@ -116,11 +186,17 @@ func spawnHeaderWindows(titles: [String], offset: [Int: Int]) {
 //    }
 //}
 
-func spawnTinyWindows() {
-    let desktop1 = Desktop(path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop"))
+func spawnTinyWindows(ctx: Context) async throws {
+    let desktop1 = try await Desktop(
+        path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop"),
+        ctx: ctx
+    )
 //    let desktop2 = Desktop(path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents"))
 
-    let desktop3 = Desktop(path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop").appendingPathComponent("pngs"))
+    let desktop3 = try await Desktop(
+        path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop").appendingPathComponent("pngs"),
+        ctx: ctx
+    )
 
 //    let union = desktop1 + desktop2
 
@@ -129,16 +205,31 @@ func spawnTinyWindows() {
     WindowManager.shared.entries = union.entries
 }
 
-func spawnAggregateWindow(globalState: Binding<GlobalState>) {
-    let desktop1 = Desktop(path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop"))
+@MainActor
+func spawnAggregateWindow(globalState: Binding<GlobalState>, ctx: Context) async throws {
+    let desktop1 = try await Desktop(
+        path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop"),
+        ctx: ctx
+    )
 //    let desktop2 = Desktop(path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents"))
 
-    let desktop3 = Desktop(path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop").appendingPathComponent("pngs"))
-    let desktop4 = Desktop(path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop").appendingPathComponent("x").appendingPathComponent("x"))
+    let desktop3 = try await Desktop(
+        path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop").appendingPathComponent("pngs"),
+        ctx: ctx
+    )
+    let desktop4 = try await Desktop(
+        path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop").appendingPathComponent("x").appendingPathComponent("x"),
+        ctx: ctx
+    )
+
+    let desktopMDs = try await Desktop(
+        path: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop").appendingPathComponent("md"),
+        ctx: ctx
+    )
 
 //    let union = desktop1 + desktop2
 
-    let union = desktop1 + desktop3 + desktop4
+    let union = desktop3 + desktopMDs // + desktop3 + desktop4
 
     WindowManager.shared.entries = union.entries
 
@@ -151,7 +242,13 @@ func spawnAggregateWindow(globalState: Binding<GlobalState>) {
     )
 
 //    let hostingView = NSHostingView(rootView: AggregateView(entries: union.entries))
-    let hostingView = NSHostingView(rootView: RepellingViews(entries: union.entries, globalState: globalState))
+    let hostingView = NSHostingView(
+        rootView: RepellingViews(
+            entries: union.entries,
+            globalState: globalState,
+            ctx: ctx
+        )
+    )
 
     window.isOpaque = false
     window.backgroundColor = .clear
@@ -210,32 +307,71 @@ func randomName() -> String {
 
 struct TinyWindowContent: View {
     let metadata: WindowMetadata
+    let ctx: Context
+    @State var fileContents: LLBByteBuffer? = nil
+    @State var fileLabel: String? = nil
+
+    init(metadata: WindowMetadata, ctx: Context, fileContents: LLBByteBuffer? = nil) {
+        self.metadata = metadata
+        self.ctx = ctx
+        self.fileContents = fileContents
+    }
+
     var body: some View {
         Group {
-            if IMAGE_FORMATS.contains(metadata.kind) {
-                Image(nsImage: NSImage(contentsOfFile: metadata.path)!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: metadata.width, height: metadata.height)
-                    .font(.caption2)
-                    .background(metadata.color.opacity(0.9))
-                    .cornerRadius(8)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 0.5))
+            if let fileContents, let fileLabel {
+                let ext = URL(fileURLWithPath: fileLabel).pathExtension
+                if IMAGE_FORMATS.contains(ext) {
+                    Image(nsImage: NSImage(data: Data(fileContents.readableBytesView))!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: metadata.width, height: metadata.height)
+                        .font(.caption2)
+                        .background(metadata.color.opacity(0.9))
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 0.5))
+                } else if TEXT_FORMATS.contains(ext) {
+                    Text(String(bytes: fileContents.readableBytesView, encoding: .utf8)!)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: metadata.width, height: metadata.height)
+                        .font(.caption2)
+                        .background(metadata.color.opacity(0.9))
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 0.5))
+                } else {
+                    Text(metadata.title)
+                        .font(.caption2)
+                        .frame(width: metadata.width, height: metadata.height)
+                        .background(metadata.color.opacity(0.9))
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 0.5))
+                }
             } else {
-                Text(metadata.title)
-                    .font(.caption2)
-                    .frame(width: metadata.width, height: metadata.height)
-                    .background(metadata.color.opacity(0.9))
-                    .cornerRadius(8)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 0.5))
+                Text("Loading image from CAS database")
+            }
+        }.onAppear {
+            Task {
+                let client = LLBCASFSClient(self.ctx.db)
+                print("Loading \(self.metadata.artifact)")
+                switch self.metadata.artifact {
+                case .localFile(let path, let mime):
+                    throw StringError("Not implmeneted")
+                case .casBlob(let id, let label):
+                    if let ic = try? await client.load(id, self.ctx).get().blob?.read(self.ctx).get() {
+                        self.fileContents = LLBByteBuffer(ic)
+                        self.fileLabel = label
+                    }
+                case .feed(let id):
+                    throw StringError("Not implemented")
+                }
             }
         }
     }
 }
 
 struct WindowMetadata: Identifiable, Hashable {
-    var id: String {
-        path
+    var id: Artifact {
+        artifact
     }
 
 //    let window: NSWindow
@@ -245,7 +381,7 @@ struct WindowMetadata: Identifiable, Hashable {
     let height: CGFloat
     let title: String
     let color: Color
-    let path: String
+    let artifact: Artifact
 
     var size: CGSize {
         CGSize(width: width, height: height)
@@ -344,14 +480,19 @@ func imageDimensions(at path: String) -> CGSize? {
 
 struct Desktop {
     var entries: [WindowMetadata]
+    var ctx: Context
 
-    init(path: URL) {
+    init(path: URL, ctx: Context) async throws {
         var collected: [WindowMetadata] = []
 
         let fm = FileManager.default
-        guard let contents = try? fm.contentsOfDirectory(at: path, includingPropertiesForKeys: [.creationDateKey, .fileSizeKey, .isDirectoryKey], options: [.skipsHiddenFiles]) else {
+        guard let contents = try? fm.contentsOfDirectory(
+            at: path,
+            includingPropertiesForKeys: [.creationDateKey, .fileSizeKey, .isDirectoryKey],
+            options: [.skipsHiddenFiles]
+        ) else {
             self.entries = []
-            return
+            throw StringError("Unable to fetch contents of directory: '\(path)'")
         }
 
         // Fetch size data first
@@ -411,7 +552,12 @@ struct Desktop {
             var size: CGSize? = nil
             if IMAGE_FORMATS.contains(kind) {
                 size = imageDimensions(at: url.path(percentEncoded: false))
+            } else if TEXT_FORMATS.contains(kind) {
+                size = CGSize(width: 400, height: 400)
             }
+
+            let client = LLBCASFSClient(ctx.db)
+            let dataID = try await client.store(Data(contentsOf: url), ctx).get()
 
             let metadata = WindowMetadata(
 //                window: window,
@@ -421,7 +567,7 @@ struct Desktop {
                 height: size?.height ?? CGFloat(Int.random(in: 50..<120)),
                 title: title,
                 color: colorByKind(kind),
-                path: url.path(percentEncoded: false)
+                artifact: .casBlob(id: dataID, label: "\(url)")
             )
 //
 //            let hostingView = NSHostingView(rootView: TinyWindowContent(metadata: metadata))
@@ -442,13 +588,15 @@ struct Desktop {
         }
 
         self.entries = collected
+        self.ctx = ctx
     }
 
     static func + (lhs: Desktop, rhs: Desktop) -> Desktop {
-        Desktop(entries: lhs.entries + rhs.entries)
+        Desktop(entries: lhs.entries + rhs.entries, ctx: lhs.ctx)
     }
 
-    private init(entries: [WindowMetadata]) {
+    private init(entries: [WindowMetadata], ctx: Context) {
         self.entries = entries
+        self.ctx = ctx
     }
 }
