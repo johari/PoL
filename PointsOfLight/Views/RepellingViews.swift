@@ -1,81 +1,63 @@
-//
-//  ContentView.swift
-//  PointsOfLight
-//
-//  Created by Nima Johari on 4/12/25.
-//
-
 import SwiftUI
 import llbuild2fx
-
-// MARK: Helper data types
-
-struct LayoutRegion {
-    var origin: CGPoint
-    var size: CGSize
-}
-
-struct WindowLayout: Equatable {
-    var position: CGPoint
-    var scale: CGFloat
-}
-
-extension Array {
-    func chunked(into size: Int) -> [[Element]] {
-        if size == 0 {
-            return []
-        }
-        return stride(from: 0, to: count, by: size).map {
-            Array(self[$0..<Swift.min($0 + size, count)])
-        }
-    }
-}
-
-extension CGRect {
-    var center: CGPoint {
-        CGPoint(x: midX, y: midY)
-    }
-}
-
-
 
 // MARK: RepellingViews
 struct RepellingViews: View {
     @State private var entries: [WindowMetadata]
     @State private var layout: [Artifact: WindowLayout] = [:]
-    @Binding private var globalState: GlobalState
+    @ObservedObject private var globalState: GlobalState
+    private var engine: FXBuildEngine
     private var ctx: Context
 
-    public init(entries: [WindowMetadata], globalState: Binding<GlobalState>, ctx: Context) {
+    public init(entries: [WindowMetadata], globalState: GlobalState, engine: FXBuildEngine, ctx: Context) {
         self._entries = State(initialValue: entries)
-        self._globalState = globalState
+        self.globalState = globalState
         self.ctx = ctx
+        self.engine = engine
+    }
+
+    var rows: [[String]] {
+        return Array(
+            $globalState.data.tags.wrappedValue.keys.sorted()
+        ).chunked(into: ($globalState.data.wrappedValue.tags.keys.count) / 4)
     }
 
     var body: some View {
         VStack {
             Color.clear.frame(height: 40) // adds exact 40pt space
-            let tags = Array(globalState.tags.keys.sorted())
-            let rows = tags.chunked(into: (tags.count + 1) / 3) // split into 2 rows
-
             VStack {
                 ForEach(rows, id: \.self) { row in
                     HStack {
                         ForEach(row, id: \.self) { tag in
-                            Button(tag) {
-                                if globalState.tagFilter.contains(tag) {
-                                    globalState.tagFilter.remove(tag)
+                            let tagCount = globalState.data.tags[tag]?.count ?? 0
+
+                            Button("\(tag) \(tagCount)") {
+                                if globalState.data.tagFilter.contains(tag) {
+                                    globalState.data.tagFilter.remove(tag)
                                 } else {
-                                    globalState.tagFilter.insert(tag)
+                                    globalState.data.tagFilter.insert(tag)
                                 }
-                                globalState.selected = []
+                                globalState.data.selected = []
                             }
-                            .border(globalState.tagFilter.contains(tag) ? .purple : .clear, width: 5)
+                            .border(globalState.data.tagFilter.contains(tag) ? .purple : .clear, width: 5)
+                            .tint(Color.temperatureGradient(Double(tagCount)/20.0))
                         }
                     }
                 }
+            }.task {
             }
             body_
+        }.onAppear {
+            if let gs = try? JSONDecoder().decode(GlobalStateData.self, from: Data(contentsOf: configURL)) {
+                globalState.data = gs
+                print("[tags]", globalState.data.tags.keys)
+            } else {
+                print("Failed to parse global state")
+            }
+            layout = computeOrganicExposeLayout(entries: entries.filter { globalState.isTagged($0) })
+        }.onChange(of: globalState.data) {
+            layout = computeOrganicExposeLayout(entries: entries.filter { globalState.isTagged($0) })
+            try? JSONEncoder().encode(globalState.data).write(to: configURL)
         }
     }
 
@@ -86,14 +68,17 @@ struct RepellingViews: View {
             ZStack {
                 ForEach(entries, id: \.self) { entry in
                     if let info = layout[entry.id] {
-                        TinyWindowContent(metadata: entry, ctx: ctx)
-                            .border(globalState.selected.contains(entry.id) ? .black : Color.blue, width: globalState.selected.contains(entry.id) ? 10 : 2)
+                        TinyWindowContent(metadata: entry, engine: engine, ctx: ctx)
+                            .border(
+                                globalState.data.selected.contains(entry.id) ? .black : Color.blue,
+                                width: globalState.data.selected.contains(entry.id) ? 10 : 2
+                            )
                             .frame(width: entry.size.width, height: entry.size.height)
                             .onTapGesture {
-                                if globalState.selected.contains(entry.id) {
-                                    globalState.selected.remove(entry.id)
+                                if globalState.data.selected.contains(entry.id) {
+                                    globalState.data.selected.remove(entry.id)
                                 } else {
-                                    globalState.selected.insert(entry.id)
+                                    globalState.data.selected.insert(entry.id)
                                 }
                             }
                             .scaleEffect(info.scale)
@@ -103,15 +88,6 @@ struct RepellingViews: View {
                 }
             }
             .background(Color.clear)
-            .onAppear {
-                if let gs = try? JSONDecoder().decode(GlobalState.self, from: Data(contentsOf: configURL)) {
-                    globalState = gs
-                }
-                layout = computeOrganicExposeLayout(entries: entries.filter { globalState.isTagged($0) })
-            }.onChange(of: globalState) {
-                layout = computeOrganicExposeLayout(entries: entries.filter { globalState.isTagged($0) })
-                try? JSONEncoder().encode(globalState).write(to: configURL)
-            }
         }
     }
 
@@ -571,65 +547,3 @@ struct RepellingViews: View {
 
 
 }
-
-// MARK: ContentView
-struct ContentView: View {
-    var globalState: Binding<GlobalState>
-    @State var tagValue: String = ""
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Button(action: {
-                groupByKindAndLayout()
-            }) {
-                Text("Group by Kind")
-            }
-            Button(action: {
-                groupByMonthAndLayout()
-            }, label: {
-                Text("Group by Month of Creation")
-            })
-            Button(action: {
-                sortAndLayoutWindowsIntoColumns()
-            }, label: {
-                Text("Sort by First Letter")
-            })
-            Button(action: {
-                globalState.selected.wrappedValue.map { s in
-                    var currentTags = globalState.tags.wrappedValue[tagValue]
-                    globalState.tags.wrappedValue[tagValue] = (currentTags ?? []).union([s])
-                }
-                globalState.selected.wrappedValue = []
-            }, label: {
-                Text("Tag \(globalState.selected.wrappedValue.count) items as:")
-                TextField("something", text: $tagValue)
-            })
-            HStack {
-                Group {
-                    ForEach(Array(arrayLiteral: globalState.selected.wrappedValue), id: \.self) { t in
-                        Text(t.description.debugDescription)
-                    }
-                }
-                Group {
-                    ForEach(Array(arrayLiteral: globalState.tags.wrappedValue), id: \.self) { t in
-                        Text(t.description.debugDescription)
-                    }
-                }
-            }
-        }
-        .padding()
-    }
-}
-
-struct AggregateView: View {
-    var entries: [WindowMetadata]
-    var ctx: Context
-
-    var body: some View {
-        ForEach(entries) { entry in
-            TinyWindowContent(metadata: entry, ctx: ctx)
-        }
-    }
-}
-
-
